@@ -4,8 +4,9 @@
     // $showexisterror=false;
   if($_SERVER["REQUEST_METHOD"]=="POST"){
       include "components/_dbconnect.php";
-    $username=$_POST["username"];
-    $password=$_POST["password"];
+    // use safe escape mysqli_real_escape_string method to avoid SQL Injection filters out the Special Vunarable characters
+    $username=mysqli_real_escape_string($conn,$_POST["username"]);
+    $password=mysqli_real_escape_string($conn,$_POST["password"]);
     $exist=false;
       // $sql="SELECT * FROM users WHERE name='$username' and password='$password'";
       $sql="SELECT * FROM users WHERE name='$username'";
@@ -14,7 +15,7 @@
       if($rows==1){
         while($row=mysqli_fetch_assoc($result)){
           if(password_verify($password,$row["password"])){
-            $login=true;
+            $login=true; // No need of specifing the $login variable use $_SESSION VARIABLE It self
             session_start();
             $_SESSION["loggedin"]=true;
             $_SESSION["username"]=$username;
